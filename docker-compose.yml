@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    # command: poetry run watchgod daphne -b 0.0.0.0 -p 8000 base.asgi:application
+    command: bash -c "poetry run python manage.py migrate && poetry run python manage.py runserver 0.0.0.0:8000"
+
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+    env_file:
+      - .env
+
+  redis:
+    image: redis:6-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  db:
+    image: postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: checkersdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    ports:
+      - "5432:5432"
+  # celery:
+  #   image: redis:6-alpine
+  #   command: celery -A base worker -l INFO
+  #   volumes:
+  #     - .:/code
+  #   env_file:
+  #     - .env
+
+volumes:
+  redis_data:
+  postgres_data:
