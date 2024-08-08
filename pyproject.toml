@@ -13,6 +13,7 @@ pytest-djangorestframework = "^0.1.2"
 djangorestframework = "^3.15.2"
 djangorestframework-simplejwt = "^5.3.1"
 psycopg2 = "^2.9.9"
+watchgod = "^0.8.2"
 
 [tool.poetry.group.dev.dependencies]
 
