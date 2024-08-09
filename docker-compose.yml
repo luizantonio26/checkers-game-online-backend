@@ -4,7 +4,7 @@ services:
   web:
     build: .
     # command: poetry run watchgod daphne -b 0.0.0.0 -p 8000 base.asgi:application
-    command: bash -c "poetry run python manage.py migrate && poetry run python manage.py runserver 0.0.0.0:8000"
+    command: bash -c "poetry install && poetry run python manage.py migrate && poetry run python manage.py runserver 0.0.0.0:8000"
 
     volumes:
       - .:/code
@@ -27,9 +27,9 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: checkersdb
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
 
     ports:
       - "5432:5432"

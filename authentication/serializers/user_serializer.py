@@ -1,3 +1,4 @@
+import pyotp
 from rest_framework import serializers
 from authentication.models import User
 
@@ -41,6 +42,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
                 nickname=validated_data['nickname'],
                 first_name=validated_data['first_name'],
                 last_name=validated_data['last_name'],
+                secret=pyotp.random_base32(),
             )
             user.set_password(validated_data['password'])
             user.save()

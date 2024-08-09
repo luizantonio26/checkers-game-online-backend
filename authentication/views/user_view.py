@@ -26,7 +26,7 @@ class UserViewSet(viewsets.GenericViewSet):
         
         if serializer.is_valid():
             try:
-                user = authenticate(**serializer.validated_data)
+                user = authenticate(**serializer.validated_data) # type: ignore
                 
                 if not user:
                     return Response(data={'detail': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST) # type: ignore
