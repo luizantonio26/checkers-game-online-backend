@@ -38,7 +38,7 @@ class UserViewSet(viewsets.GenericViewSet):
         
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST) # type: ignore
     
-    def authenticated_route(self, request, *args, **kwargs):
+    def authenticated_route_test(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return Response(data={'authenticated': True}, status=status.HTTP_200_OK) # type: ignore
         return Response(data={'authenticated': False}, status=status.HTTP_401_UNAUTHORIZED) # type: ignore
