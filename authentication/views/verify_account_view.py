@@ -9,7 +9,6 @@ class VerifyAccountView(GenericViewSet):
     def send_otp_code(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             user = request.user
-            print(user.secret)
             if not user.secret:
                 user.secret = pyotp.random_base32()
                 user.save()
