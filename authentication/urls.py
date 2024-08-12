@@ -3,6 +3,8 @@ from django.urls import include, path
 from rest_framework import routers
 from rest_framework_simplejwt.views import TokenRefreshView
 
+from authentication.views.password_reset_request_view import PasswordResetRequestView
+from authentication.views.password_reset_confirm_view import PasswordResetConfirmView
 from authentication.views.user_view import UserViewSet
 from authentication.views.verify_account_view import VerifyAccountView
 
@@ -17,4 +19,6 @@ urlpatterns = [
     path('auth/token/refresh/', TokenRefreshView.as_view(), name="token_refresh"),
     path('auth/otp/', VerifyAccountView.as_view({"post": "send_otp_code"}), name="send_otp_code"),
     path('auth/otp/verify/<str:otp>/', VerifyAccountView.as_view({"get": "verify_otp"}), name="verify_otp"),
+    path('auth/password-reset-request/', PasswordResetRequestView.as_view(), name="password_reset_request"),
+    path('auth/password-reset-confirm/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
 ]
