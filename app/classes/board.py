@@ -1,6 +1,5 @@
 import os
-from classes.piece import Dama, Normal
-from colorama import Fore, Back, Style
+from app.classes.piece import Dama, Normal
 
 class Board:
     def __init__(self, empty=False):
@@ -48,31 +47,5 @@ class Board:
         self.board = board
         
         return isValidMove, isCaptureMove
-
-    def print_board(self):
-        # for row in self.board:
-        #     print([piece.__str__() if piece else None for piece in row])  
-        os.system('color')
-        print(Style.RESET_ALL)
-        print("    1    2    3    4    5    6    7    8  ")
-        for i, row in enumerate(self.board): 
-            line_string = f"{i+1} "
-            for j, piece in enumerate(row):
-                if piece:
-                    if type(piece) == bool:
-                        line_string += f"{Back.BLUE}     {Style.RESET_ALL}"
-                    elif piece.piece_color == 'black': # type: ignore
-                        if type(piece) == Dama:
-                            line_string += f"{Back.BLUE}{Fore.BLACK}  \u26C3  {Style.RESET_ALL}"
-                        else:
-                            line_string += f"{Back.BLUE}{Fore.BLACK}  \u26C2  {Style.RESET_ALL}"
-                    else:
-                        if type(piece) == Dama:
-                            line_string += f"{Back.BLUE}{Fore.WHITE}  \u26C1  {Style.RESET_ALL}"
-                        else:
-                            line_string += f"{Back.BLUE}{Fore.WHITE}  \u26C0  {Style.RESET_ALL}"
-                else:
-                    line_string += f"{Back.WHITE}     {Style.RESET_ALL}"
-            print(line_string)
             
             
