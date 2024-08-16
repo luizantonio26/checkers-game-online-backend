@@ -103,7 +103,7 @@ TEMPLATES = [
 
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'BACKEND': 'base.extended_redis_channel_layer.ExtendedRedisChannelLayer',
         'CONFIG': {
             "hosts": [('redis', 6379)],
         },
