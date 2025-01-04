@@ -29,17 +29,22 @@ jobs:
         ssh-keygen -p -f ~/.ssh/id_rsa
         eval $(ssh-agent -s)
         ssh-add ~/.ssh/id_rsa
-
     - name: Deploy to VPS
       env:
         VPS_HOST: ${{ secrets.VPS_HOST }}
         VPS_USER: ${{ secrets.VPS_USER }}
         APP_PATH: ${{ secrets.APP_PATH }}
+        ENV_CONTENT: ${{ secrets.ENV_CONTENT }}
+        ENV_DEV_CONTENT: ${{ secrets.ENV_DEV_CONTENT }}
+        ENV_PROD_CONTENT: ${{ secrets.ENV_PROD_CONTENT }}
       run: |
         # Conecta via SSH e faz o deploy usando Docker Compose
         ssh -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST << EOF
           cd $APP_PATH
           git pull origin main
+          echo "$ENV_CONTENT" > .env
+          echo "$ENV_DEV_CONTENT" > .env.dev
+          echo "$ENV_PROD_CONTENT" > .env.prod
           sudo docker compose -f docker-compose.yml -f docker-compose.prod.yml down
           sudo docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
         EOF
