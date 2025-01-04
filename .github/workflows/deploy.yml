@@ -26,6 +26,7 @@ jobs:
         chmod 600 ~/.ssh/id_rsa
         
         # Inicia o agente SSH e adiciona a chave privada
+        ssh-keygen -p -f ~/.ssh/id_rsa
         eval $(ssh-agent -s)
         ssh-add ~/.ssh/id_rsa
 
