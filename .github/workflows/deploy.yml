@@ -20,7 +20,7 @@ jobs:
         mkdir -p ~/.ssh
 
         # Salva a chave privada em um arquivo
-        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        echo "${{ secrets.PRIVATE_SSH_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         
         # Inicia o agente SSH e adiciona a chave privada
