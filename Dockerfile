@@ -1,32 +1,41 @@
-# Dockerfile
-
 # Usando a imagem oficial do Python
 FROM python:3.12-slim
 
-
-RUN pip install poetry
-
+# Atualiza o gerenciador de pacotes e instala dependências do sistema
 RUN apt-get update \
-    && apt-get -y install libpq-dev gcc \
-    && pip install psycopg2
+    && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    curl \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Instala o Poetry
+RUN curl -sSL https://install.python-poetry.org | python3 -
+
+# Adiciona o Poetry ao PATH
+ENV PATH="/root/.local/bin:$PATH"
 
 # Configurações de ambiente
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Diretório de trabalho
+# Define o diretório de trabalho
 WORKDIR /code
 
-# Copia os arquivos do Poetry
-COPY pyproject.toml poetry.lock /code/
+# Copia os arquivos de configuração do Poetry
+COPY pyproject.toml poetry.lock ./
 
-RUN poetry lock --no-update
+# Configura o Poetry para não criar ambientes virtuais
+RUN poetry config virtualenvs.create false
 
-# Instalar as dependências com o Poetry
-RUN poetry config virtualenvs.create false \
-    && poetry install
+# Instala as dependências do projeto
+RUN poetry install --no-interaction --no-ansi
+RUN mkdir -p /app/logs
 
-# Copia o código fonte para o contêiner
-COPY . /code/
+RUN pip install hypercorn
+# Copia o restante do código fonte para o contêiner
+COPY . .
 
-# RUN echo "from authentication.models import User; User.objects.create_superuser(email='admin@checkersgame.com', password='admin', nickname='admin', first_name='Admin', last_name='User')" | poetry run python manage.py shell
+# Define o comando padrão
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

@@ -2,12 +2,20 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
 from authentication.models import User
-from authentication.serializers.user_serializer import LoginUserSerializer, RegisterUserSerializer
+from authentication.serializers.user_serializer import LoginUserSerializer, ProfileSerializer, RegisterUserSerializer
 
 
 class UserViewSet(viewsets.GenericViewSet):
     serializer_class = RegisterUserSerializer
-    
+    def getUserProfile(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return Response(data={'detail': 'User not authenticated!'}, status=status.HTTP_401_UNAUTHORIZED) # type: ignore
+        
+        user = self.request.user
+        
+        serializer = ProfileSerializer(user)
+        
+        return Response(data=serializer.data, status=status.HTTP_200_OK) # type: ignore
     def register(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         

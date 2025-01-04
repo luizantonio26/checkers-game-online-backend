@@ -1,5 +1,5 @@
 import os
-from app.classes.piece import Dama, Normal
+from app.classes.piece import Dama, Normal, Piece
 
 class Board:
     def __init__(self, empty=False):
@@ -26,10 +26,81 @@ class Board:
                     valid_positions[row][col] = True
         return valid_positions
 
-    def move_piece(self, player, start_pos, end_pos):
-        start_pos = (start_pos[0] - 1, start_pos[1] - 1)
-        end_pos = (end_pos[0] - 1, end_pos[1] - 1)
+    def hasCaptureAvailable(self, piece_pos):
+        piece = self.board[piece_pos[0]][piece_pos[1]]
         
+        if type(piece) == bool:
+            return False
+        
+        if piece.piece_color == 'white' and isinstance(piece, Normal):
+            moves = [[-1, 1],
+                     [-1, -1]
+                    ]
+            
+            for move in moves:
+                x = piece_pos[0] + move[0]
+                y = piece_pos[1] + move[1]
+                
+                if x < 0 or x > 7 or y < 0 or y > 7:
+                    continue
+                
+                if isinstance(self.board[x][y], Piece) and self.board[x][y].piece_color == 'black':
+                    diagonal_x = x + move[0]
+                    diagonal_y = y + move[1]
+                    
+                    if diagonal_x < 0 or diagonal_x > 7 or diagonal_y < 0 or diagonal_y > 7:
+                        continue
+                    
+                    if type(self.board[diagonal_x][diagonal_y]) == bool:
+                        return True
+        elif piece.piece_color == 'black' and isinstance(piece, Normal):
+            moves = [[1, 1],
+                     [1, -1]
+                    ]
+            
+            for move in moves:
+                x = piece_pos[0] + move[0]
+                y = piece_pos[1] + move[1]
+                
+                if x < 0 or x > 7 or y < 0 or y > 7:
+                    continue
+                
+                if isinstance(self.board[x][y], Piece) and self.board[x][y].piece_color == 'white':
+                    diagonal_x = x + move[0]
+                    diagonal_y = y + move[1]
+                    
+                    if diagonal_x < 0 or diagonal_x > 7 or diagonal_y < 0 or diagonal_y > 7:
+                        continue
+                    
+                    if type(self.board[diagonal_x][diagonal_y]) == bool:
+                        return True
+        else:
+            moves = [[-1, 1],
+                     [-1, -1],
+                     [1, 1],
+                     [1, -1]
+                    ]
+            
+            for move in moves:
+                x = piece_pos[0] + move[0]
+                y = piece_pos[1] + move[1]
+                
+                if x < 0 or x > 7 or y < 0 or y > 7:
+                    continue
+                
+                if isinstance(self.board[x][y], Piece) and self.board[x][y].piece_color != piece.piece_color:
+                    diagonal_x = x + move[0]
+                    diagonal_y = y + move[1]
+                    
+                    if diagonal_x < 0 or diagonal_x > 7 or diagonal_y < 0 or diagonal_y > 7:
+                        continue
+                    
+                    if type(self.board[diagonal_x][diagonal_y]) == bool:
+                        return True
+        return False
+        
+        
+    def move_piece(self, player, start_pos, end_pos):
         piece = self.board[start_pos[0]][start_pos[1]]
         
         
@@ -47,5 +118,8 @@ class Board:
         self.board = board
         
         return isValidMove, isCaptureMove
+    
+    def isDama(self, pos):
+        return type(self.board[pos[0]-1][pos[1]-1]) == Dama
             
             

@@ -1,0 +1,45 @@
+name: Deploy Django App
+
+on:
+  push:
+    branches:
+      - main  # Altere para o branch de deploy se necessário
+
+jobs:
+  deploy:
+    name: Deploy to VPS
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'  # Versão do Python usada no servidor
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Deploy to VPS
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        VPS_HOST: ${{ secrets.VPS_HOST }}
+        VPS_USER: ${{ secrets.VPS_USER }}
+        APP_PATH: ${{ secrets.APP_PATH }}
+      run: |
+        echo "$SSH_PRIVATE_KEY" > private_key
+        chmod 600 private_key
+
+        ssh -o StrictHostKeyChecking=no -i private_key $VPS_USER@$VPS_HOST << EOF
+          cd $APP_PATH
+          git pull origin main
+          sudo sudo docker compose -f docker-compose.yml -f docker-compose.prod.yml down
+          sudo sudo docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+        EOF
+
+    - name: Cleanup
+      run: rm private_key

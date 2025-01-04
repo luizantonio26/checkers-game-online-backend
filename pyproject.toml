@@ -16,6 +16,12 @@ psycopg2 = "^2.9.9"
 watchgod = "^0.8.2"
 pyotp = "^2.9.0"
 python-dotenv = "^1.0.1"
+django-cors-headers = "^4.4.0"
+channels-redis = "^4.2.0"
+celery = "^5.4.0"
+redis = "^5.0.8"
+aioredis = "^2.0.1"
+django-redis = "^5.4.0"
 
 [tool.poetry.group.dev.dependencies]
 

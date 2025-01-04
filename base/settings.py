@@ -9,10 +9,9 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+import os
 from datetime import timedelta
 from pathlib import Path
-import os
 from dotenv import load_dotenv
 
 # Carrega as variáveis de ambiente do arquivo .env
@@ -49,8 +48,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'authentication',
+    'gameroom',
 ]
 
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -81,6 +83,9 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
+    "http://localhost:5173",
+    "http://192.168.0.105:5173",
+    "http://131.0.203.9:5173",
 ]
 
 ROOT_URLCONF = 'base.urls'
@@ -110,8 +115,18 @@ CHANNEL_LAYERS = {
     },
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis:redis:6379/1",  # Substitua pela URL do seu Redis
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
 WSGI_APPLICATION = 'base.wsgi.application'
-ASGI_APPLICATION = 'base.asgi.application'
+ASGI_APPLICATION = "base.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases

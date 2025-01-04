@@ -33,9 +33,9 @@ class Normal(Piece):
     
         self.piece_position = end_pos
         
-        if self.piece_color == "white" and start_pos[0] == 1:
+        if self.piece_color == "white" and self.piece_position[0] == 0:
             board[end_pos[0]][end_pos[1]] = Dama(self.piece_color, self.piece_position)
-        elif self.piece_color == "black" and start_pos[0] == 6:
+        elif self.piece_color == "black" and self.piece_position[0] == 7:
             board[end_pos[0]][end_pos[1]] = Dama(self.piece_color, self.piece_position)
         else:
             board[end_pos[0]][end_pos[1]] = self
@@ -58,7 +58,6 @@ class Normal(Piece):
                     board[start_pos[0]-1][start_pos[1]-1] = True
         
         return board, True, isCaptureMove
-        
 
     def can_move(self, end_pos, board):
         start_pos = self.piece_position

@@ -1,4 +1,5 @@
 
+from math import e
 from channels.middleware import BaseMiddleware
 from channels.db import database_sync_to_async
 from django.contrib.auth.models import AnonymousUser
@@ -19,16 +20,25 @@ def get_user(user_id):
 
 class TokenAuthMiddleware(BaseMiddleware):
     async def __call__(self, scope, receive, send):
-        headers = dict(scope['headers'])
-        if b'authorization' in headers:
-            token_name, token_key = headers[b'authorization'].decode().split()
-            try:
-                UntypedToken(token_key)
-                decoded_data = jwt_decode(token_key, settings.SECRET_KEY, algorithms=["HS256"])
-                user = await get_user(decoded_data['user_id'])
-                scope['user'] = user
-            except InvalidTokenError:
-                scope['user'] = AnonymousUser()
-        else:
+        # headers = dict(scope['headers'])
+        # if b'authorization' in headers:
+        #     token_name, token_key = headers[b'authorization'].decode().split()
+        #     try:
+        #         UntypedToken(token_key)
+        #         decoded_data = jwt_decode(token_key, settings.SECRET_KEY, algorithms=["HS256"])
+        #         user = await get_user(decoded_data['user_id'])
+        #         scope['user'] = user
+        #     except InvalidTokenError:
+        #         scope['user'] = AnonymousUser()
+        # else:
+            # scope['user'] = AnonymousUser()
+        token = scope['query_string'].decode().split('token=')[1]
+        try:
+            UntypedToken(token)
+            decoded_data = jwt_decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+            user = await get_user(decoded_data['user_id'])
+            scope['user'] = user
+        except InvalidTokenError:
             scope['user'] = AnonymousUser()
+        
         return await super().__call__(scope, receive, send)
