@@ -14,32 +14,31 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.12'  # Versão do Python usada no servidor
-
-    - name: Install dependencies
+    - name: Setup SSH Key
       run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        # Salva a chave privada em um arquivo
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        
+        # Inicia o agente SSH e adiciona a chave privada
+        eval $(ssh-agent -s)
+        ssh-add ~/.ssh/id_rsa
 
     - name: Deploy to VPS
       env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         VPS_HOST: ${{ secrets.VPS_HOST }}
         VPS_USER: ${{ secrets.VPS_USER }}
         APP_PATH: ${{ secrets.APP_PATH }}
       run: |
-        echo "$SSH_PRIVATE_KEY" > private_key
-        chmod 600 private_key
-
-        ssh -o StrictHostKeyChecking=no -i private_key $VPS_USER@$VPS_HOST << EOF
+        # Conecta via SSH e faz o deploy usando Docker Compose
+        ssh -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST << EOF
           cd $APP_PATH
           git pull origin main
-          sudo sudo docker compose -f docker-compose.yml -f docker-compose.prod.yml down
-          sudo sudo docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+          sudo docker compose -f docker-compose.yml -f docker-compose.prod.yml down
+          sudo docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
         EOF
 
     - name: Cleanup
-      run: rm private_key
+      run: |
+        # Remove a chave privada após o deploy
+        rm ~/.ssh/id_rsa
