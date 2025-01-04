@@ -16,6 +16,9 @@ jobs:
 
     - name: Setup SSH Key
       run: |
+        # Cria o diretório ~/.ssh se não existir
+        mkdir -p ~/.ssh
+
         # Salva a chave privada em um arquivo
         echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
