@@ -15,12 +15,14 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Setup SSH Key
+      env:
+        PRIVATE_SSH_KEY: ${{ secrets.PRIVATE_SSH_KEY }}
       run: |
         # Cria o diretório ~/.ssh se não existir
         mkdir -p ~/.ssh
 
         # Salva a chave privada em um arquivo
-        echo "${{ secrets.PRIVATE_SSH_KEY }}" > ~/.ssh/id_rsa
+        echo "$PRIVATE_SSH_KEY" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         
         # Inicia o agente SSH e adiciona a chave privada
