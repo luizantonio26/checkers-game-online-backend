@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   web:
-    command: bash -c "hypercorn base.asgi:application --config hypercorn_config.toml"
+    command: bash -c "python manage.py migrate && hypercorn base.asgi:application --config hypercorn_config.toml"
     ports:
       - "8000:8000"
     env_file:
