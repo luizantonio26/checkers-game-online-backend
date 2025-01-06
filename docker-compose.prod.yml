@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   web:
-    command: bash -c "python manage.py migrate && hypercorn base.asgi:application --config hypercorn_config.toml"
+    command: bash -c "uv run python manage.py migrate && uv run gunicorn  base.asgi:application -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 --workers 4 --threads 2 --log-level info"
     ports:
       - "8000:8000"
     env_file:

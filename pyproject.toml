@@ -1,30 +1,42 @@
-[tool.poetry]
+[tool.pdm.dev-dependencies]
+dev = []
+
+[tool.pdm.build]
+includes = []
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+
+[project]
+authors = [
+    { name = "Luiz Antonio Rozendo", email = "luiz.rozendo01@gmail.com" },
+]
+requires-python = "<4.0,>=3.12"
+dependencies = [
+    "channels[daphne]<5.0.0,>=4.1.0",
+    "Django<6.0.0,>=5.0.7",
+    "pytest-djangorestframework<1.0.0,>=0.1.2",
+    "djangorestframework<4.0.0,>=3.15.2",
+    "djangorestframework-simplejwt<6.0.0,>=5.3.1",
+    "watchgod<1.0.0,>=0.8.2",
+    "pyotp<3.0.0,>=2.9.0",
+    "python-dotenv<2.0.0,>=1.0.1",
+    "django-cors-headers<5.0.0,>=4.4.0",
+    "channels-redis<5.0.0,>=4.2.0",
+    "celery<6.0.0,>=5.4.0",
+    "redis<6.0.0,>=5.0.8",
+    "aioredis<3.0.0,>=2.0.1",
+    "django-redis<6.0.0,>=5.4.0",
+    "psycopg2-binary>=2.9.10",
+    "uvicorn>=0.34.0",
+    "websockets>=14.1",
+    "gunicorn>=23.0.0",
+]
 name = "damas"
 version = "0.1.0"
 description = ""
-authors = ["Luiz Antonio Rozendo <luiz.rozendo01@gmail.com>"]
 readme = "README.md"
 
-[tool.poetry.dependencies]
-python = "^3.12"
-channels = {extras = ["daphne"], version = "^4.1.0"}
-Django = "^5.0.7"
-pytest-djangorestframework = "^0.1.2"
-djangorestframework = "^3.15.2"
-djangorestframework-simplejwt = "^5.3.1"
-psycopg2 = "^2.9.9"
-watchgod = "^0.8.2"
-pyotp = "^2.9.0"
-python-dotenv = "^1.0.1"
-django-cors-headers = "^4.4.0"
-channels-redis = "^4.2.0"
-celery = "^5.4.0"
-redis = "^5.0.8"
-aioredis = "^2.0.1"
-django-redis = "^5.4.0"
-
-[tool.poetry.group.dev.dependencies]
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[dependency-groups]
+dev = []
