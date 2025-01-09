@@ -48,7 +48,7 @@ jobs:
           echo "$ENV_PROD_CONTENT" > .env.prod
           sudo docker compose -f docker-compose.yml -f docker-compose.prod.yml down
           sudo docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
-          sudo cp $NGINX_CONF /etc/nginx/sites-available/cg-backend
+          sudo echo "$NGINX_CONF" > /etc/nginx/sites-available/cg-backend
           sudo systemctl restart nginx
         EOF
 
