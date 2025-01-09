@@ -43,12 +43,13 @@ jobs:
         ssh -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST << EOF
           cd $APP_PATH
           git pull origin main
+          echo "$NGINX_CONF" > cg-backend
           echo "$ENV_CONTENT" > .env
           echo "$ENV_DEV_CONTENT" > .env.dev
           echo "$ENV_PROD_CONTENT" > .env.prod
           sudo docker compose -f docker-compose.yml -f docker-compose.prod.yml down
           sudo docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
-          sudo echo "$NGINX_CONF" > /etc/nginx/sites-enabled/cg-backend
+          sudo cp cg-backend /etc/nginx/sites-enabled/
           sudo systemctl restart nginx
         EOF
 
