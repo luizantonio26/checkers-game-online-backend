@@ -107,7 +107,7 @@ venv/
 ENV/ 
 env.bak/ 
 venv.bak/ 
-
+nginx.conf
 # mkdocs documentation 
 /site 
 

@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   web:
-    command: bash -c "uv run python manage.py migrate && uv run gunicorn --log-level debug --access-logfile - --error-logfile -  base.asgi:application -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 --workers 4 --threads 2"
+    command: bash -c "./start_server.sh"
     ports:
       - "8000:8000"
     env_file:
@@ -10,6 +10,6 @@ services:
 
   celery:
     build: .
-    command: bash -c "celery -A base worker --loglevel=INFO"
+    command: bash -c "uv run celery -A base worker --loglevel=INFO"
     env_file:
       - .env.prod

@@ -32,13 +32,15 @@ class TokenAuthMiddleware(BaseMiddleware):
         #         scope['user'] = AnonymousUser()
         # else:
             # scope['user'] = AnonymousUser()
-        token = scope['query_string'].decode().split('token=')[1]
-        try:
-            UntypedToken(token)
-            decoded_data = jwt_decode(token, settings.SECRET_KEY, algorithms=["HS256"])
-            user = await get_user(decoded_data['user_id'])
-            scope['user'] = user
-        except InvalidTokenError:
-            scope['user'] = AnonymousUser()
+        query_string = scope['query_string'].decode()
+        token = None
+        if 'token=' in query_string:
+            token = query_string.split('token=')[1].split('&')[0]
+        
+        # You can add your token validation logic here
+        # For example, add the token to the scope
+        scope['token'] = token
+
+        return await self.inner(scope, receive, send)
         
         return await super().__call__(scope, receive, send)
